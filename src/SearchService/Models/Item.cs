@@ -20,4 +20,8 @@ public class Item : Entity
     public required string Color { get; set; }
     public int Mileage { get; set; }
     public required string ImageUrl { get; set; }
+    public override string ToString()
+    {
+        return $"{Make} {Model} {Year} {Color}";
+    }
 }

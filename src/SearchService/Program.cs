@@ -2,6 +2,9 @@ using Polly;
 using Polly.Extensions.Http;
 using SearchService.Data;
 using SearchService.Services;
+using MassTransit;
+using AutoMapper;
+using SearchService.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +13,35 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddHttpClient<AuctionServiceHttpClient>()
                 .AddPolicyHandler(GetPolicy());
+builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search"));
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.ReceiveEndpoint("search-auction-created", e =>
+        {
+            e.UseMessageRetry(r => r.Interval(5, 5));
+            e.ConfigureConsumer<AuctionCreatedConsumer>(context);
+        });
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+        cfg.ReceiveEndpoint("search-auction-updated", e =>
+        {
+            e.UseMessageRetry(r => r.Interval(5, 5));
+            e.ConfigureConsumer<AuctionUpdatedConsumer>(context);
+        });
+
+        cfg.ReceiveEndpoint("search-auction-deleted", e =>
+        {
+            e.UseMessageRetry(r => r.Interval(5, 5));
+            e.ConfigureConsumer<AuctionDeletedConsumer>(context);
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
 
 var app = builder.Build();
 
