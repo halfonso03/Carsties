@@ -1,2 +1,14 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
 
+[role='button'],
+button {
+  cursor: pointer;
+}
+
+@layer components {
+  .input-custom {
+    @apply flex-grow pl-5 bg-transparent focus:outline-none border-transparent focus:border-transparent focus:ring-0;
+  }
+}
