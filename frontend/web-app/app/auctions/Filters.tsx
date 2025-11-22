@@ -13,7 +13,7 @@ const orderedButtons = [
 ];
 
 const filterButtons = [
-  { label: 'Live AUctions', icon: GiFlame, value: 'live' },
+  { label: 'Live Auctions', icon: GiFlame, value: 'live' },
   { label: 'Ending < 6 hours', icon: GiFinishLine, value: 'endingSoon' },
   { label: 'Completed', icon: BsStopwatchFill, value: 'finished' },
 ];

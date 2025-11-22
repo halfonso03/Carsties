@@ -10,7 +10,8 @@ export default function Search() {
   const searchTerm = useParamsStore((state) => state.searchTerm);
   const searchValue = useParamsStore((state) => state.searchValue);
 
-  console.log('render search');
+
+  
   function onChange(event: ChangeEvent<HTMLInputElement>) {
     setSearchValue(event.target.value);
   }
