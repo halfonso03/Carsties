@@ -16,7 +16,7 @@ export default function CarImage({ imageUrl }: Props) {
       sizes="(max-width:768px) 100vw, (max-width:1200px) 50vw, 25vw"
       className={`
         object-cover duration-1700 ease-in-out ${
-          loading ? 'opacity-0 scale-110' : 'opacity-100 scale-100'
+          loading ? 'opacity-0 scale-110' : 'opacity-100 '
         }
         `}
       alt="car"
