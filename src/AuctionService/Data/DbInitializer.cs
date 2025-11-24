@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using AuctionService.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,9 +13,10 @@ public static class DbInitializer
         SeedData(scope.ServiceProvider.GetService<AuctionDbContext>());
     }
 
-    private static void SeedData(AuctionDbContext context)
+    private static async Task SeedData(AuctionDbContext context)
     {
         context.Database.Migrate();
+
 
         if (context.Auctions.Any())
         {

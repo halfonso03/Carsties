@@ -15,8 +15,7 @@ export default async function Details({
   const { id } = await params;
   const data = await getDetailedViewData(id);
   const user = await getCurrentUser();
-
-  // const user = await getCurrentUser();
+  console.log('data', data);
 
   return (
     <div>
