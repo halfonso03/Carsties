@@ -39,3 +39,5 @@ export type AuctionFinished = {
     seller: string
     amount?: number
 }
+
+

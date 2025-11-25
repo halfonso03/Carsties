@@ -10,8 +10,6 @@ export default function Search() {
   const searchTerm = useParamsStore((state) => state.searchTerm);
   const searchValue = useParamsStore((state) => state.searchValue);
 
-
-  
   function onChange(event: ChangeEvent<HTMLInputElement>) {
     setSearchValue(event.target.value);
   }
@@ -31,12 +29,7 @@ export default function Search() {
         type="text"
         value={searchValue}
         placeholder="Search for cars by make, model or color"
-        className="
-                    flex-grow pl-5 bg-transparent 
-                    focus:outline-none border-transparent 
-                    focus:border-transparent focus:ring-0 text-sm 
-                    text-gray-600
-                "
+        className="input-custom"
       />
       <button>
         <FaSearch
