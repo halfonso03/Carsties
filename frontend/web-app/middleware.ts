@@ -1,7 +1,9 @@
-export { auth as middleware } from '@/auth';
+export { auth as middleware } from "@/auth"
 
 export const config = {
-    matcher: ['/session'],
+    matcher: [
+        '/session'
+    ],
     pages: {
         signIn: '/api/auth/signin'
     }

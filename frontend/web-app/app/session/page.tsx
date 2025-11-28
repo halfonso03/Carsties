@@ -3,6 +3,7 @@ import React from 'react';
 import Heading from '../components/Heading';
 import AuthTest from './AuthTest';
 
+export const dynamic = 'force-dynamic';
 
 export default async function Session() {
   const session = await auth();

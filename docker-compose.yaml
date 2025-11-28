@@ -27,6 +27,12 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', '-q', 'ping']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   auction-svc:
     image: halfonso03/auction-svc:latest
     build:
@@ -96,6 +102,9 @@ services:
       - RabbitMq__Host=rabbitmq
     ports:
       - 7004:80
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   identity-svc:
     image: halfonso03/identity-svc:latest
@@ -106,6 +115,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=postgres:5432; User Id=postgres; Password=postgrespw; Database=identity
+      - IssuerUri=https://id.carsties.local
+      - ClientApp=https://app.carsties.local
+      - VIRTUAL_HOST=id.carsties.local
     ports:
       - 5001:80
     depends_on:
@@ -120,9 +132,36 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
+      - ClientApp=https://app.carsties.local
     ports:
       - 6001:80
 
+  web-app:
+    image: halfonso03/web-app:latest
+    build:
+      context: .
+      dockerfile: frontend/web-app/Dockerfile
+    volumes:
+      - /var/lib/web/data
+    environment:
+      - AUTH_SECRET="muwpppSZPxaGoe5WPtAeFJ9GDVhcTjVHqIplHArHabY="
+      - API_URL=http://gateway-svc/
+      - ID_URL=https://id.carsties.local
+      - ID_URL_INTERNAL=http://identity-svc
+      - AUTH_URL=https://app.carsties.local
+      - AUTH_URL_INTERNAL=http://web-app:3000
+      - VIRTUAL_HOST=app.carsties.local
+      - VIRTUAL_PORT=3000
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - d:\devcerts:/etc/nginx/certs
 volumes:
   pgdata:
   mongodata:

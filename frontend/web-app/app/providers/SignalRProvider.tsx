@@ -3,25 +3,30 @@ import { useAuctionStore } from '@/hooks/useAuctionStore';
 import { useBidStore } from '@/hooks/useBidStore';
 import { Auction, AuctionFinished, Bid } from '@/types';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
-import { User } from 'next-auth';
 import { useParams } from 'next/navigation';
 import { ReactNode, useCallback, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import AuctionCreatedToast from '../components/AuctionCreatedToast';
 import AuctionFinishedToast from '../components/AuctionFinishedToast';
 import { getDetailedViewData } from '../actions/auctionActions';
+import { useSession } from 'next-auth/react';
 
 type Props = {
   children: ReactNode;
-  user: User | null;
 };
 
-export default function SignalRProvider({ children, user }: Props) {
+export default function SignalRProvider({ children }: Props) {
+  const session = useSession();
+  const user = session.data?.user;
+
   const connection = useRef<HubConnection | null>(null);
 
   const setCurrentPrice = useAuctionStore((state) => state.setCurrentPrice);
   const addBid = useBidStore((state) => state.addBid);
   const params = useParams<{ id: string }>();
+  const apiUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://api.carsties.local/notifications'
+        : process.env.NEXT_PUBLIC_NOTIFY_URL
 
   const handleBidPlaced = useCallback(
     (bid: Bid) => {
@@ -73,7 +78,7 @@ export default function SignalRProvider({ children, user }: Props) {
   useEffect(() => {
     if (!connection.current) {
       connection.current = new HubConnectionBuilder()
-        .withUrl('http://localhost:6001/notifications')
+        .withUrl(apiUrl!)
         .withAutomaticReconnect()
         .build();
 
@@ -92,12 +97,7 @@ export default function SignalRProvider({ children, user }: Props) {
       connection.current?.off('AuctionCreated', handleAuctionCreated);
       connection.current?.off('AuctionFinished', handleAuctionFinished);
     };
-  }, [
-    handleAuctionCreated,
-    handleAuctionFinished,
-    handleBidPlaced,
-    setCurrentPrice,
-  ]);
+  }, [apiUrl, handleAuctionCreated, handleAuctionFinished, handleBidPlaced, setCurrentPrice]);
 
   return children;
 }

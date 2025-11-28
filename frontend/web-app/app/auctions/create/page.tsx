@@ -1,5 +1,6 @@
 import Heading from '@/app/components/Heading';
 import AuctionForm from '../AuctionForm';
+export const dynamic = 'force-dynamic';
 
 export default function Page() {
   return (
