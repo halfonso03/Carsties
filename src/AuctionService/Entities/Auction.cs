@@ -15,4 +15,6 @@ public class Auction
     public DateTime AuctionEnd { get; set; }
     public Status Status { get; set; }
     public Item Item { get; set; }
+
+    public bool HasReservcePrice() => ReservePrice > 0;
 }

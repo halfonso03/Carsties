@@ -4,6 +4,7 @@ import NavBar from './nav/NavBar';
 import ToasterProvider from './providers/ToasterProvider';
 import SignalRProvider from './providers/SignalRProvider';
 import { SessionProvider } from 'next-auth/react';
+import { getCurrentUser } from './actions/authActions';
 
 export const metadata: Metadata = {
   title: 'Carsties',
@@ -15,6 +16,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // const user = await getCurrentUser();
+  // const notifyUrl = process.env.NOTIFY_URL;
+
   return (
     <html lang="en">
       <body>
